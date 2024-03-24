@@ -34,32 +34,34 @@ export const userSignup = async (
     const user = new User({ name, email, password: hashedPassword });
     await user.save();
 
-    // create token and store cookie
-    res.clearCookie(COOKIE_NAME, {
-      httpOnly: true,
-      secure: true,
-      domain: COOKIE_URL,
-      sameSite: "none",
-      signed: true,
-      path: "/",
-    });
+    // // create token and store cookie
+    // res.clearCookie(COOKIE_NAME, {
+    //   httpOnly: true,
+    //   secure: true,
+    //   domain: COOKIE_URL,
+    //   sameSite: "none",
+    //   signed: true,
+    //   path: "/",
+    // });
 
     const token = createToken(user._id.toString(), user.email, "7d");
-    const expires = new Date();
-    expires.setDate(expires.getDate() + 7);
-    res.cookie(COOKIE_NAME, token, {
-      path: "/",
-      domain: COOKIE_URL,
-      sameSite: "none",
-      expires,
-      httpOnly: true,
-      secure: true,
-      signed: true,
-    });
+    // const expires = new Date();
+
+
+    // expires.setDate(expires.getDate() + 7);
+    // res.cookie(COOKIE_NAME, token, {
+    //   path: "/",
+    //   domain: COOKIE_URL,
+    //   sameSite: "none",
+    //   expires,
+    //   httpOnly: true,
+    //   secure: true,
+    //   signed: true,
+    // });
 
     return res
       .status(201)
-      .json({ message: "OK", name: user.name, email: user.email });
+      .json({ message: "OK", name: user.name, email: user.email, token });
   } catch (error) {
     console.log(error);
     return res.status(200).json({ message: "ERROR", cause: error.message });
@@ -85,30 +87,30 @@ export const userLogin = async (
 
     // create token and store cookie
 
-    res.clearCookie(COOKIE_NAME, {
-      httpOnly: true,
-      secure: true,
-      domain: COOKIE_URL,
-      signed: true,
-      path: "/",
-    });
+    // res.clearCookie(COOKIE_NAME, {
+    //   httpOnly: true,
+    //   secure: true,
+    //   domain: COOKIE_URL,
+    //   signed: true,
+    //   path: "/",
+    // });
 
     const token = createToken(user._id.toString(), user.email, "7d");
-    const expires = new Date();
-    expires.setDate(expires.getDate() + 7);
-    res.cookie(COOKIE_NAME, token, {
-      path: "/",
-      domain: COOKIE_URL,
-      sameSite: "none",
-      expires,
-      httpOnly: true,
-      secure: true,
-      signed: true,
-    });
+    // const expires = new Date();
+    // expires.setDate(expires.getDate() + 7);
+    // res.cookie(COOKIE_NAME, token, {
+    //   path: "/",
+    //   domain: COOKIE_URL,
+    //   sameSite: "none",
+    //   expires,
+    //   httpOnly: true,
+    //   secure: true,
+    //   signed: true,
+    // });
 
     return res
       .status(200)
-      .json({ message: "OK", name: user.name, email: user.email });
+      .json({ message: "OK", name: user.name, email: user.email, token });
   } catch (error) {
     console.log(error);
     return res.status(200).json({ message: "ERROR", cause: error.message });
@@ -153,14 +155,14 @@ export const userLogout = async (
       return res.status(401).send("Permissions didn't match");
     }
 
-    res.clearCookie(COOKIE_NAME, {
-      httpOnly: true,
-      secure: true,
-      domain: COOKIE_URL,
-      sameSite: "none",
-      signed: true,
-      path: "/",
-    });
+    // res.clearCookie(COOKIE_NAME, {
+    //   httpOnly: true,
+    //   secure: true,
+    //   domain: COOKIE_URL,
+    //   sameSite: "none",
+    //   signed: true,
+    //   path: "/",
+    // });
 
     return res
       .status(200)

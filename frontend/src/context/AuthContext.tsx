@@ -31,14 +31,14 @@ type UserAuth = {
     login: (email: string, password: string) => Promise<void>;
     signup: (name: string, email: string, password: string) => Promise<void>;
     //logout once we move logout we need to remove cookies 
-    logout:()=>Promise<void>;
+    logout: () => Promise<void>;
 
 };
 
 const AuthContext = createContext<UserAuth | null>(null);
 
 //authprovider it will wrap all the childerens present in that
-export const AuthProvider = ({children} : { children: ReactNode }) => {
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
     //handle couple of states within the provider
     const [user, setUser] = useState<User | null>(null);
 
@@ -53,18 +53,19 @@ export const AuthProvider = ({children} : { children: ReactNode }) => {
         async function checkStatus() {
             const data = await checkAuthStatus();
 
-            if(data) {
+            if (data) {
                 setUser({ email: data.email, name: data.name });
                 setIsLoggedIn(true);
-            } 
+            }
         }
         checkStatus();
     }, []);
 
 
-    const login = async( email: string, password: string) => {
+    const login = async (email: string, password: string) => {
         const data = await loginUser(email, password);
-        if(data) {
+        if (data) {
+            localStorage.setItem('token', data.token);
             setUser({ email: data.email, name: data.name });
             setIsLoggedIn(true);
         }
@@ -72,19 +73,20 @@ export const AuthProvider = ({children} : { children: ReactNode }) => {
 
 
     const signup = async (name: string, email: string, password: string) => {
-    const data = await signupUser(name, email, password);
-    if (data) {
-      setUser({ email: data.email, name: data.name });
-      setIsLoggedIn(true);
-    }
-  };
-  const logout = async () => {
-    await logoutUser();
-    setIsLoggedIn(false);
-    setUser(null);
-    window.location.reload();
-  };
-    
+        const data = await signupUser(name, email, password);
+        if (data) {
+            localStorage.setItem('token', data.token);
+            setUser({ email: data.email, name: data.name });
+            setIsLoggedIn(true);
+        }
+    };
+    const logout = async () => {
+        await logoutUser();
+        setIsLoggedIn(false);
+        setUser(null);
+        window.location.reload();
+    };
+
     //define the values
 
     const value = {
@@ -94,10 +96,10 @@ export const AuthProvider = ({children} : { children: ReactNode }) => {
         logout,
         signup,
     };
-        return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+    return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 
 
 };
 
-   //create context that can be used by children 
-   export const useAuth = () => useContext(AuthContext);
+//create context that can be used by children 
+export const useAuth = () => useContext(AuthContext);
